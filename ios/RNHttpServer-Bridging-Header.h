@@ -7,4 +7,5 @@
 #import <React/RCTEventEmitter.h>
 // GCDWebServer headers
 #import <GCDWebServer/GCDWebServer.h>
+#import <GCDWebServer/GCDWebServerDataRequest.h>
 #import <GCDWebServer/GCDWebServerDataResponse.h>
