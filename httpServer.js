@@ -48,6 +48,7 @@ export class HTTPServer {
   constructor({port}) {
     this.port = port;
     this.eventEmitter = new NativeEventEmitter(WebServerManager);
+    this.eventTypes = []
   }
 
   start() {
@@ -55,17 +56,27 @@ export class HTTPServer {
   }
 
   stop() {
+    this.eventTypes.map(type => {
+      this.eventEmitter.removeAllListeners(type);
+    });
     return WebServerManager.stopServer();
   }
 
   registerRouter(router) {
     Object.entries(router.getHandlers()).forEach(([method, handler]) => {
       const eventName = method.toUpperCase();
+      this.eventTypes.push(eventName);
       WebServerManager.subscribe(eventName);
       this.subscription = this.eventEmitter.addListener(
         eventName,
-        ({requestId, body}) => {
-          const {data, status} = handler(body);
+        async ({requestId, body}) => {
+          let {data, status} = await handler(body);
+          if (typeof data !== "string") {
+            throw new Error("Data must be of type string");
+          }
+          if (typeof status !== "number") {
+            throw new Error("Status must be of type number");
+          }
           WebServerManager.response(requestId, status, data);
         },
       );

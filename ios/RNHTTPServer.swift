@@ -8,6 +8,10 @@
 
 import Foundation
 
+enum WebServerManagerError: Error {
+  case completionNotFound;
+}
+
 
 @objc(WebServerManager)
 class WebServerManager: RCTEventEmitter {
@@ -46,9 +50,14 @@ class WebServerManager: RCTEventEmitter {
   
   
   @objc public func response(_ requestId: String, status: NSInteger, responseData data: String) {
-    let completion: GCDWebServerCompletionBlock = completionBlocks.value(forKey: requestId) as! GCDWebServerCompletionBlock
-    let response = GCDWebServerDataResponse(data: Data(data.data(using: .utf8)!), contentType: "application/json")
-    completion(response)
+    let completion = completionBlocks.value(forKey: requestId) as! GCDWebServerCompletionBlock?;
+    if (completion != nil) {
+      let response = GCDWebServerDataResponse(data: Data(data.data(using: .utf8)!), contentType: "application/json")
+      completion!(response)
+      completionBlocks.removeObject(forKey: requestId);
+    } else {
+      NSLog("A completion is attempted to be called twice. ");
+    }
   }
   
  
