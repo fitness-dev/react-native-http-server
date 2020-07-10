@@ -11,10 +11,13 @@
 RCT_EXTERN_METHOD(initWebServer)
 RCT_EXTERN_METHOD(startServer: (NSInteger *) port
                   resolver: (RCTPromiseResolveBlock) resolve
-                  rejecter: (RCTPromiseRejectBlock)reject)
+                  rejecter: (RCTPromiseRejectBlock) reject)
 RCT_EXTERN_METHOD(createServer: (RCTPromiseResolveBlock) resolve
                   rejecter: (RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(stopServer)
+RCT_EXTERN_METHOD(stopServer: (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock) reject)
+RCT_EXTERN_METHOD(isRunning: (RCTPromiseResolveBlock) resolve
+                  rejecter: (RCTPromiseRejectBlock) reject)
 RCT_EXTERN_METHOD(subscribe: (NSString *) method)
 RCT_EXTERN_METHOD(response: (NSString *) requestId  status: (NSInteger *) status responseData: (NSString *)data)
 @end

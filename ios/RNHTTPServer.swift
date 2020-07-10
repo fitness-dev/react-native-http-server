@@ -74,7 +74,7 @@ class WebServerManager: RCTEventEmitter {
    
    - Returns: An error including a domain, error code, and error      message.
    */
-  private func createError(message: String)-> NSError{
+  private func createError(message: String)-> NSError {
     let error = NSError(domain: "app.domain", code: 0,userInfo: [NSLocalizedDescriptionKey: message])
     return error
   }
@@ -110,7 +110,7 @@ class WebServerManager: RCTEventEmitter {
    - Returns:`Promise` to JS side, resolve the server URL and reject thrown errors
    */
   @objc public func startServer(_ port: NSInteger, resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
-    if (serverRunning == ServerState.Stopped){
+    if (serverRunning == ServerState.Stopped) {
       DispatchQueue.main.sync {
         serverRunning = ServerState.Running
         webServer.start(withPort: UInt(port), bonjourName: "React Native Web Server")
@@ -125,11 +125,16 @@ class WebServerManager: RCTEventEmitter {
   /**
    Stop `webserver` and update serverRunning variable to Stopped case
    */
-  @objc public func stopServer() -> Void {
-    if(serverRunning == ServerState.Running){
+  @objc public func stopServer(_ resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+    if (serverRunning == ServerState.Running) {
       webServer.stop()
       serverRunning = ServerState.Stopped
     }
+    resolve(true);
+  }
+  
+  @objc public func isRunning(_ resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
+    resolve(serverRunning == ServerState.Running);
   }
   
 }
