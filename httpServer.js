@@ -48,10 +48,11 @@ export class HTTPServer {
   constructor({port}) {
     this.port = port;
     this.eventEmitter = new NativeEventEmitter(WebServerManager);
-    this.eventTypes = []
+    this.eventTypes = [];
   }
 
   start() {
+    this.started = true;
     return WebServerManager.startServer(this.port);
   }
 
@@ -59,6 +60,7 @@ export class HTTPServer {
     this.eventTypes.map(type => {
       this.eventEmitter.removeAllListeners(type);
     });
+    this.started = false;
     return WebServerManager.stopServer();
   }
 
@@ -81,6 +83,9 @@ export class HTTPServer {
         },
       );
     });
+  }
+  isRunning() {
+    return WebServerManager.isRunning();
   }
 
   registerHandler(callback) {
